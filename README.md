@@ -1,0 +1,2 @@
+# simplependulum
+Unityで単振り子のシミュレーションを行うコードです
