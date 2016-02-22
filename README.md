@@ -9,6 +9,12 @@
 ★更新履歴
 　2016/02/21 ver.0.1  とりあえず公開。
 
+★謝辞
+　このコードのCameraController.csは、「@TAK-EMI」様の「Unityでメタセコイアのよ
+　うにカメラを操作できるようにするためのスクリプト
+  ( https://gist.github.com/TAK-EMI/d67a13b6f73bed32075d )」を使わせて頂きまし
+　た。この場をお借りしまして厚く御礼申し上げます。
+
 ★ライセンス
 　このソフトはフリーソフトウェアです（2条項BSDライセンス）。
 --------------------------------------------------------------------------------
@@ -26,7 +32,7 @@
 
 　2.本ソフトウェアは無保証です。自己責任で使用してください。
 
-  Copyright (c) 2015, @dc1394
+  Copyright (c) 2016, @dc1394
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without

@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="CameraController.cs" company="">
+// <copyright file="CameraController.cs" company="@TAK-EMI">
 //     Unityでメタセコイアのようにカメラを操作できるようにするためのスクリプト
 //     ( https://gist.github.com/TAK-EMI/d67a13b6f73bed32075d )
 //     Copyright ©  2015 @TAK-EMI All Rights Reserved.
@@ -7,27 +7,59 @@
 //-----------------------------------------------------------------------
 
 // クラス名が被っているといけないので、namespaceで囲む
-namespace simplependulum
+namespace TAK_CameraController
 {
+    using System;
     using UnityEngine;
 
-    // マウスのボタンをあらわす番号がわかりにくかったので名前を付けた
-    enum MouseButtonDown
+    /// <summary>
+    /// マウスのボタンをあらわす番号がわかりにくかったので名前を付けた
+    /// </summary>
+    internal enum MouseButtonDown
     {
+        /// <summary>
+        /// マウスの左ボタン
+        /// </summary>
         MBD_LEFT = 0,
+
+        /// <summary>
+        /// マウスの右ボタン
+        /// </summary>
         MBD_RIGHT,
-        MBD_MIDDLE,
-    };
 
-    public class CameraController : MonoBehaviour
+        /// <summary>
+        /// マウスのスクロールボタン
+        /// </summary>
+        MBD_MIDDLE
+    }
+
+    /// <summary>
+    /// メタセコイアのようにカメラを操作できるようにするためのクラス
+    /// </summary>
+    internal class CameraController : MonoBehaviour
     {
+        #region フィールド
+        
+        /// <summary>
+        /// 注視点となるオブジェクト
+        /// </summary>
         [SerializeField]    // privateなメンバもインスペクタで編集したいときに付ける
-        private GameObject focusObj = null; // 注視点となるオブジェクト
+        private GameObject focusObj = null;
 
-        private Vector3 oldPos; // マウスの位置を保存する変数
+        /// <summary>
+        /// マウスの位置を保存する変数
+        /// </summary>
+        private Vector3 oldPos;
 
-        // 注視点オブジェクトが未設定の場合、新規に生成する
-        void setupFocusObject(string name)
+        #endregion フィールド
+
+        #region メソッド
+
+        /// <summary>
+        /// 注視点オブジェクトが未設定の場合、新規に生成する
+        /// </summary>
+        /// <param name="name">注視点オブジェクトの名前</param>
+        private void SetupFocusObject(String name)
         {
             var obj = this.focusObj = new GameObject(name);
             obj.transform.position = Vector3.zero;
@@ -35,11 +67,16 @@ namespace simplependulum
             return;
         }
 
-        void Start()
+        /// <summary>
+        /// Use this for initialization
+        /// </summary>
+        private void Start()
         {
             // 注視点オブジェクトの有無を確認
             if (this.focusObj == null)
-                this.setupFocusObject("CameraFocusObject");
+            {
+                this.SetupFocusObject("CameraFocusObject");
+            }
 
             // 注視点オブジェクトをカメラの親にする
             var trans = this.transform;
@@ -51,50 +88,68 @@ namespace simplependulum
             return;
         }
 
-        void Update()
+        /// <summary>
+        /// フレーム処理
+        /// </summary>
+        private void Update()
         {
             // マウス関係のイベントを関数にまとめる
-            this.mouseEvent();
+            this.MouseEvent();
 
             return;
         }
 
-        // マウス関係のイベント
-        void mouseEvent()
+        /// <summary>
+        /// マウス関係のイベント
+        /// </summary>
+        private void MouseEvent()
         {
             // マウスホイールの回転量を取得
-            float delta = Input.GetAxis("Mouse ScrollWheel");
+            var delta = Input.GetAxis("Mouse ScrollWheel");
+            
             // 回転量が0でなければホイールイベントを処理
             if (delta != 0.0f)
-                this.mouseWheelEvent(delta);
+            {
+                this.MouseWheelEvent(delta);
+            }
 
             // マウスボタンが押されたタイミングで、マウスの位置を保存する
             if (Input.GetMouseButtonDown((int)MouseButtonDown.MBD_LEFT) ||
             Input.GetMouseButtonDown((int)MouseButtonDown.MBD_MIDDLE) ||
             Input.GetMouseButtonDown((int)MouseButtonDown.MBD_RIGHT))
+            {
                 this.oldPos = Input.mousePosition;
+            }
 
             // マウスドラッグイベント
             this.mouseDragEvent(Input.mousePosition);
 
             return;
         }
-
-        // マウスホイールイベント
-        void mouseWheelEvent(float delta)
+                
+        /// <summary>
+        /// マウスホイールイベント
+        /// </summary>
+        /// <param name="delta">マウスホイールの量</param>
+        private void MouseWheelEvent(float delta)
         {
             this.transform.position *= (1.0f - 0.8f * delta);
         }
 
-        // マウスドラッグイベント関数
+        /// <summary>
+        /// マウスドラッグイベント関数
+        /// </summary>
+        /// <param name="mousePos">マウスの現在の位置</param>
         void mouseDragEvent(Vector3 mousePos)
         {
             // マウスの現在の位置と過去の位置から差分を求める
-            Vector3 diff = mousePos - oldPos;
+            var diff = mousePos - oldPos;
 
             // 差分の長さが極小数より小さかったら、ドラッグしていないと判断する
             if (diff.magnitude < Vector3.kEpsilon)
+            {
                 return;
+            }
 
             if (Input.GetMouseButton((int)MouseButtonDown.MBD_LEFT))
             {
@@ -118,11 +173,14 @@ namespace simplependulum
             return;
         }
 
-        // カメラを移動する関数
+        /// <summary>
+        /// カメラを移動する関数
+        /// </summary>
+        /// <param name="vec">カメラの移動量ベクトル</param>
         void cameraTranslate(Vector3 vec)
         {
-            Transform focusTrans = this.focusObj.transform;
-            Transform trans = this.transform;
+            var focusTrans = this.focusObj.transform;
+            var trans = this.transform;
 
             // カメラのローカル座標軸を元に注視点オブジェクトを移動する
             focusTrans.Translate((trans.right * -vec.x) + (trans.up * vec.y));
@@ -130,17 +188,19 @@ namespace simplependulum
             return;
         }
 
-        // カメラを回転する関数
+        /// <summary>
+        /// カメラを回転する関数
+        /// </summary>
+        /// <param name="eulerAngle">カメラの回転する角度（オイラー角）</param>
         public void cameraRotate(Vector3 eulerAngle)
         {
-            Vector3 focusPos = this.focusObj.transform.position;
-            Transform trans = this.transform;
+            var focusPos = this.focusObj.transform.position;
+            var trans = this.transform;
 
             // 回転前のカメラの情報を保存する
-            Vector3 preUpV, preAngle, prePos;
-            preUpV = trans.up;
-            preAngle = trans.localEulerAngles;
-            prePos = trans.position;
+            var preUpV = trans.up;
+            var preAngle = trans.localEulerAngles;
+            var prePos = trans.position;
 
             // カメラの回転
             // 横方向の回転はグローバル座標系のY軸で回転する
@@ -154,7 +214,7 @@ namespace simplependulum
             // ジンバルロック対策
             // カメラが真上や真下を向くとジンバルロックがおきる
             // ジンバルロックがおきるとカメラがぐるぐる回ってしまうので、一度に90度以上回るような計算結果になった場合は回転しないようにする(計算を元に戻す)
-            Vector3 up = trans.up;
+            var up = trans.up;
             if (Vector3.Angle(preUpV, up) > 90.0f)
             {
                 trans.localEulerAngles = preAngle;
@@ -163,5 +223,7 @@ namespace simplependulum
 
             return;
         }
+
+        #endregion メソッド
     }
 }

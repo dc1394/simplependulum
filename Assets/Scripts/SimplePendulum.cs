@@ -82,12 +82,6 @@ namespace simplependulum
         private GameObject Rope = null;
 
         /// <summary>
-        /// 柱オブジェクト
-        /// </summary>
-        [SerializeField]
-        private GameObject Pole = null;
-
-        /// <summary>
         /// ロープの長さ
         /// </summary>
         private float ropeLength;
@@ -275,7 +269,7 @@ namespace simplependulum
         }
 
         /// <summary>
-        /// ロープの座標と角度、および柱の角度を更新する
+        /// ロープの座標と角度を更新する
         /// </summary>
         private void RopeUpdate()
         {
@@ -288,19 +282,14 @@ namespace simplependulum
             // ロープの角度を初期化
             this.Rope.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
 
-            // 柱の角度を初期化
-            this.Pole.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
-
             // 角度が正かどうか
             if (this.GetSpherePosZ() > 0.0f)
             {
                 this.Rope.transform.Rotate(new Vector3(-this.GetSphereAndGravityAngle(), 0.0f, 0.0f));
-                this.Pole.transform.Rotate(new Vector3(-this.GetSphereAndGravityAngle(), 0.0f, 90.0f));
             }
             else
             {
                 this.Rope.transform.Rotate(new Vector3(this.GetSphereAndGravityAngle(), 0.0f, 0.0f));
-                this.Pole.transform.Rotate(new Vector3(this.GetSphereAndGravityAngle(), 0.0f, 90.0f));
             }
         }
 
