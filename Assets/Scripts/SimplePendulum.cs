@@ -4,7 +4,7 @@
 //     This software is released under the BSD 2-Clause License.
 // </copyright>
 //-----------------------------------------------------------------------
-namespace simplependulum
+namespace SimplePendulum
 {
     using System;
     using UnityEngine;
@@ -58,7 +58,7 @@ namespace simplependulum
         /// 球の半径
         /// </summary>
         [SerializeField]
-        private float radius = 0.1f;
+        private float Radius = 0.1f;
 
         /// <summary>
         /// ボタンのテキスト
@@ -190,7 +190,7 @@ namespace simplependulum
             this.simpleharmonic = GUI.Toggle(new Rect(200.0f, (float)ypos2, 150.0f, 20.0f), this.simpleharmonic, "単振動");
             if (sincurvbefore != this.simpleharmonic)
             {
-                Solveeomcs.SolveEOMcs.SetSimpleharmonic(simpleharmonic);
+                Solveeomcs.SolveEOMcs.SetSimpleharmonic(this.simpleharmonic);
             }
 
             ypos2 += 20;
@@ -211,11 +211,11 @@ namespace simplependulum
             ypos2 += 20;
 
             // 角度を変更するスライダーを表示する
-            var thetadegbefore = thetadeg;
-            thetadeg = GUI.HorizontalSlider(new Rect(200.0f, (float)ypos2, 100.0f, 20.0f), thetadeg, -180.0f, 180.0f);
-            if (Mathf.Abs(thetadeg - thetadegbefore) > Mathf.Epsilon)
+            var thetadegbefore = this.thetadeg;
+            this.thetadeg = GUI.HorizontalSlider(new Rect(200.0f, (float)ypos2, 100.0f, 20.0f), this.thetadeg, -180.0f, 180.0f);
+            if (Mathf.Abs(this.thetadeg - thetadegbefore) > Mathf.Epsilon)
             {
-                var theta = Mathf.Deg2Rad * thetadeg;
+                var theta = Mathf.Deg2Rad * this.thetadeg;
                 Solveeomcs.SolveEOMcs.SetTheta(theta);
                 this.SphereRotate(theta);
                 this.RopeUpdate();
@@ -229,11 +229,11 @@ namespace simplependulum
             ypos2 += 20;
 
             // 速度を変更するスライダーを表示する
-            var velocitybefore = velocity;
-            velocity = GUI.HorizontalSlider(new Rect(200.0f, (float)ypos2, 100.0f, 20.0f), velocity, -10.0f, 10.0f);
-            if (Mathf.Abs(velocity - velocitybefore) > Mathf.Epsilon)
+            var velocitybefore = this.velocity;
+            this.velocity = GUI.HorizontalSlider(new Rect(200.0f, (float)ypos2, 100.0f, 20.0f), this.velocity, -10.0f, 10.0f);
+            if (Mathf.Abs(this.velocity - velocitybefore) > Mathf.Epsilon)
             {
-                Solveeomcs.SolveEOMcs.SetV(velocity / this.ropeLength);
+                Solveeomcs.SolveEOMcs.SetV(this.velocity / this.ropeLength);
             }
 
             ypos2 += 20;
@@ -304,6 +304,7 @@ namespace simplependulum
         /// <summary>
         /// 球の角度を更新する
         /// </summary>
+        /// <param name="theta">新しい角度</param>
         private void SphereRotate(float theta)
         {
             // rcosθの計算
@@ -347,19 +348,19 @@ namespace simplependulum
         {
             this.ropeLength = Vector3.Distance(this.Origin, this.Sphere.transform.position);
 
-            thetadeg = this.GetSphereAndGravityAngle();
+            this.thetadeg = this.GetSphereAndGravityAngle();
             if (this.GetSpherePosZ() < 0.0f)
             {
-                thetadeg *= -1.0f;
+                this.thetadeg *= -1.0f;
             }
 
             Solveeomcs.SolveEOMcs.Init(
                 this.ropeLength,
                 this.Mass,
-                this.radius,
+                this.Radius,
                 this.resistance,
                 this.simpleharmonic,
-                Mathf.Deg2Rad * thetadeg);
+                Mathf.Deg2Rad * this.thetadeg);
         }
 
         /// <summary>

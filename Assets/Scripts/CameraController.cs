@@ -56,6 +56,58 @@ namespace TAK_CameraController
         #region メソッド
 
         /// <summary>
+        /// カメラを回転する関数
+        /// </summary>
+        /// <param name="eulerAngle">カメラの回転する角度（オイラー角）</param>
+        private void CameraRotate(Vector3 eulerAngle)
+        {
+            var focusPos = this.focusObj.transform.position;
+            var trans = this.transform;
+
+            // 回転前のカメラの情報を保存する
+            var preUpV = trans.up;
+            var preAngle = trans.localEulerAngles;
+            var prePos = trans.position;
+
+            // カメラの回転
+            // 横方向の回転はグローバル座標系のY軸で回転する
+            trans.RotateAround(focusPos, Vector3.up, eulerAngle.y);
+
+            // 縦方向の回転はカメラのローカル座標系のX軸で回転する
+            trans.RotateAround(focusPos, trans.right, -eulerAngle.x);
+
+            // カメラを注視点に向ける
+            trans.LookAt(focusPos);
+
+            // ジンバルロック対策
+            // カメラが真上や真下を向くとジンバルロックがおきる
+            // ジンバルロックがおきるとカメラがぐるぐる回ってしまうので、一度に90度以上回るような計算結果になった場合は回転しないようにする(計算を元に戻す)
+            var up = trans.up;
+            if (Vector3.Angle(preUpV, up) > 90.0f)
+            {
+                trans.localEulerAngles = preAngle;
+                trans.position = prePos;
+            }
+
+            return;
+        }
+
+        /// <summary>
+        /// カメラを移動する関数
+        /// </summary>
+        /// <param name="vec">カメラの移動量ベクトル</param>
+        private void CameraTranslate(Vector3 vec)
+        {
+            var focusTrans = this.focusObj.transform;
+            var trans = this.transform;
+
+            // カメラのローカル座標軸を元に注視点オブジェクトを移動する
+            focusTrans.Translate((trans.right * -vec.x) + (trans.up * vec.y));
+
+            return;
+        }
+
+        /// <summary>
         /// 注視点オブジェクトが未設定の場合、新規に生成する
         /// </summary>
         /// <param name="name">注視点オブジェクトの名前</param>
@@ -100,6 +152,42 @@ namespace TAK_CameraController
         }
 
         /// <summary>
+        /// マウスドラッグイベント関数
+        /// </summary>
+        /// <param name="mousePos">マウスの現在の位置</param>
+        private void MouseDragEvent(Vector3 mousePos)
+        {
+            // マウスの現在の位置と過去の位置から差分を求める
+            var diff = mousePos - this.oldPos;
+
+            // 差分の長さが極小数より小さかったら、ドラッグしていないと判断する
+            if (diff.magnitude < Vector3.kEpsilon)
+            {
+                return;
+            }
+
+            if (Input.GetMouseButton((int)MouseButtonDown.MBD_LEFT))
+            {
+                // マウス左ボタンをドラッグした場合(なにもしない)
+            }
+            else if (Input.GetMouseButton((int)MouseButtonDown.MBD_MIDDLE))
+            {
+                // マウス中ボタンをドラッグした場合(注視点の移動)
+                this.CameraTranslate(-diff / 10.0f);
+            }
+            else if (Input.GetMouseButton((int)MouseButtonDown.MBD_RIGHT))
+            {
+                // マウス右ボタンをドラッグした場合(カメラの回転)
+                this.CameraRotate(new Vector3(diff.y, diff.x, 0.0f));
+            }
+
+            // 現在のマウス位置を、次回のために保存する
+            this.oldPos = mousePos;
+
+            return;
+        }
+
+        /// <summary>
         /// マウス関係のイベント
         /// </summary>
         private void MouseEvent()
@@ -122,7 +210,7 @@ namespace TAK_CameraController
             }
 
             // マウスドラッグイベント
-            this.mouseDragEvent(Input.mousePosition);
+            this.MouseDragEvent(Input.mousePosition);
 
             return;
         }
@@ -133,95 +221,8 @@ namespace TAK_CameraController
         /// <param name="delta">マウスホイールの量</param>
         private void MouseWheelEvent(float delta)
         {
-            this.transform.position *= (1.0f - 0.8f * delta);
-        }
-
-        /// <summary>
-        /// マウスドラッグイベント関数
-        /// </summary>
-        /// <param name="mousePos">マウスの現在の位置</param>
-        void mouseDragEvent(Vector3 mousePos)
-        {
-            // マウスの現在の位置と過去の位置から差分を求める
-            var diff = mousePos - oldPos;
-
-            // 差分の長さが極小数より小さかったら、ドラッグしていないと判断する
-            if (diff.magnitude < Vector3.kEpsilon)
-            {
-                return;
-            }
-
-            if (Input.GetMouseButton((int)MouseButtonDown.MBD_LEFT))
-            {
-                // マウス左ボタンをドラッグした場合(なにもしない)
-            }
-            else if (Input.GetMouseButton((int)MouseButtonDown.MBD_MIDDLE))
-            {
-                // マウス中ボタンをドラッグした場合(注視点の移動)
-                this.cameraTranslate(-diff / 10.0f);
-
-            }
-            else if (Input.GetMouseButton((int)MouseButtonDown.MBD_RIGHT))
-            {
-                // マウス右ボタンをドラッグした場合(カメラの回転)
-                this.cameraRotate(new Vector3(diff.y, diff.x, 0.0f));
-            }
-
-            // 現在のマウス位置を、次回のために保存する
-            this.oldPos = mousePos;
-
-            return;
-        }
-
-        /// <summary>
-        /// カメラを移動する関数
-        /// </summary>
-        /// <param name="vec">カメラの移動量ベクトル</param>
-        void cameraTranslate(Vector3 vec)
-        {
-            var focusTrans = this.focusObj.transform;
-            var trans = this.transform;
-
-            // カメラのローカル座標軸を元に注視点オブジェクトを移動する
-            focusTrans.Translate((trans.right * -vec.x) + (trans.up * vec.y));
-
-            return;
-        }
-
-        /// <summary>
-        /// カメラを回転する関数
-        /// </summary>
-        /// <param name="eulerAngle">カメラの回転する角度（オイラー角）</param>
-        public void cameraRotate(Vector3 eulerAngle)
-        {
-            var focusPos = this.focusObj.transform.position;
-            var trans = this.transform;
-
-            // 回転前のカメラの情報を保存する
-            var preUpV = trans.up;
-            var preAngle = trans.localEulerAngles;
-            var prePos = trans.position;
-
-            // カメラの回転
-            // 横方向の回転はグローバル座標系のY軸で回転する
-            trans.RotateAround(focusPos, Vector3.up, eulerAngle.y);
-            // 縦方向の回転はカメラのローカル座標系のX軸で回転する
-            trans.RotateAround(focusPos, trans.right, -eulerAngle.x);
-
-            // カメラを注視点に向ける
-            trans.LookAt(focusPos);
-
-            // ジンバルロック対策
-            // カメラが真上や真下を向くとジンバルロックがおきる
-            // ジンバルロックがおきるとカメラがぐるぐる回ってしまうので、一度に90度以上回るような計算結果になった場合は回転しないようにする(計算を元に戻す)
-            var up = trans.up;
-            if (Vector3.Angle(preUpV, up) > 90.0f)
-            {
-                trans.localEulerAngles = preAngle;
-                trans.position = prePos;
-            }
-
-            return;
+            var value = 1.0f - (0.8f * delta);
+            this.transform.position *= value;
         }
 
         #endregion メソッド
