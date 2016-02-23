@@ -17,6 +17,11 @@ namespace SimplePendulum
         #region フィールド
 
         /// <summary>
+        /// エネルギーのスケール
+        /// </summary>
+        private static readonly float EnergyScale = 1000.0f;
+
+        /// <summary>
         /// 重力ベクトルの向き
         /// </summary>
         private static readonly Vector3 GravityDirection = Physics.gravity.normalized;
@@ -36,13 +41,7 @@ namespace SimplePendulum
         /// </summary>
         [SerializeField]
         private float CenterOfGarvityForRopeScale = 0.4f;
-
-        /// <summary>
-        /// 球の質量
-        /// </summary>
-        [SerializeField]
-        private float Mass = 1.0f;
-
+        
         /// <summary>
         /// 原点の座標
         /// </summary>
@@ -58,7 +57,7 @@ namespace SimplePendulum
         /// 球の半径
         /// </summary>
         [SerializeField]
-        private float Radius = 0.1f;
+        private float Radius = 0.0025f;
 
         /// <summary>
         /// ボタンのテキスト
@@ -165,8 +164,8 @@ namespace SimplePendulum
             // ラベルに運動エネルギーの値を表示する
             var kinetic = Solveeomcs.SolveEOMcs.Kinetic_Energy();
             GUI.Label(
-                new Rect(20.0f, (float)ypos, 170.0f, 20.0f),
-                String.Format("運動エネルギー = {0:F3}(J)", kinetic));
+                new Rect(20.0f, (float)ypos, 180.0f, 20.0f),
+                String.Format("運動エネルギー = {0:F3}E-3(J)", kinetic * SimplePendulum.EnergyScale));
 
             ypos += 20;
 
@@ -174,14 +173,14 @@ namespace SimplePendulum
             var potential = Solveeomcs.SolveEOMcs.Potential_Energy();
             GUI.Label(
                 new Rect(20.0f, (float)ypos, 170.0f, 20.0f),
-                String.Format("ポテンシャル = {0:F3}(J)", potential));
+                String.Format("ポテンシャル = {0:F3}E-3(J)", potential * SimplePendulum.EnergyScale));
 
             ypos += 20;
 
             // ラベルに全エネルギーの値を表示する
             GUI.Label(
                 new Rect(20.0f, (float)ypos, 170.0f, 20.0f),
-                String.Format("全エネルギー = {0:F3}(J)", kinetic + potential));
+                String.Format("全エネルギー = {0:F3}E-3(J)", (kinetic + potential) * SimplePendulum.EnergyScale));
 
             var ypos2 = 20;
 
@@ -356,7 +355,6 @@ namespace SimplePendulum
 
             Solveeomcs.SolveEOMcs.Init(
                 this.ropeLength,
-                this.Mass,
                 this.Radius,
                 this.resistance,
                 this.simpleharmonic,

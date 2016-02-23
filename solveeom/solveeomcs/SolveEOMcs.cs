@@ -35,13 +35,12 @@ namespace Solveeomcs
         /// seオブジェクトを初期化する
         /// </summary>
         /// <param name="l">ロープの長さ</param>
-        /// <param name="m">球の質量</param>
         /// <param name="r">球の半径</param>
         /// <param name="resistance">空気抵抗の有無</param>
         /// <param name="simpleharmonic">単振動にするかどうか</param>
         /// <param name="theta0">θの初期値</param>
         [DllImport("solveeom", EntryPoint = "init")]
-        public static extern void Init(float l, float m, float r, bool resistance, bool simpleharmonic, float theta0);
+        public static extern void Init(float l, float r, bool resistance, bool simpleharmonic, float theta0);
 
         /// <summary>
         /// 運動エネルギーを求める

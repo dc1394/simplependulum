@@ -18,9 +18,9 @@ extern "C" {
         return pse->V();
     }
 
-    void __stdcall init(float l, float m, float r, bool resistance, bool simpleharmonic, float theta0)
+    void __stdcall init(float l, float r, bool resistance, bool simpleharmonic, float theta0)
     {
-        pse = boost::in_place(l, m, r, resistance, simpleharmonic, theta0);
+        pse = boost::in_place(l, r, resistance, simpleharmonic, theta0);
     }
     
     float __stdcall kinetic_energy()

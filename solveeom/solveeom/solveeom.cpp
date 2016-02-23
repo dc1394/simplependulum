@@ -14,15 +14,15 @@
 namespace solveeom {
     // #region コンストラクタ・デストラクタ
 
-    SolveEOM::SolveEOM(float l, float m, float r, bool resistance, bool simpleharmonic, float theta0) :
+    SolveEOM::SolveEOM(float l, float r, bool resistance, bool simpleharmonic, float theta0) :
         Resistance(nullptr, [this](auto resistance) { return resistance_ = resistance; }),
 		Simpleharmonic(nullptr, [this](auto simpleharmonic) { return simpleharmonic_ = simpleharmonic; }),
         Theta([this] { return static_cast<float>(x_[0]); }, [this](auto theta) { return x_[0] = theta; }),
         V([this] { return static_cast<float>(x_[1]); }, [this](auto v) { return x_[1] = v; }),
         l_(l),
-        m_(m),
-        myu_(SolveEOM::AIRMYU),     // 空気の粘度
         r_(r),
+        m_(4.0 / 3.0 * boost::math::constants::pi<double>() * r * r * r * SolveEOM::ALUMINIUMRHO),
+        myu_(SolveEOM::AIRMYU),     // 空気の粘度
         resistance_(resistance),    // 空気抵抗
         simpleharmonic_(simpleharmonic),
         rho_(SolveEOM::AIRRHO),     // 空気の密度

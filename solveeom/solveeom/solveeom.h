@@ -58,13 +58,12 @@ namespace solveeom {
         /*!
             唯一のコンストラクタ
             \param l ロープの長さ
-            \param m 球の質量
             \param r 球の半径
             \param resistance 空気抵抗の有無
             \param simpleharmonic 単振動にするかどうか
             \param theta0 θの初期値
         */
-        SolveEOM(float l, float m, float r, bool resistance, bool simpleharmonic, float theta0);
+        SolveEOM(float l, float r, bool resistance, bool simpleharmonic, float theta0);
 
         //! A destructor.
         /*!
@@ -174,6 +173,12 @@ namespace solveeom {
         
         //! A private static member variable (constant expression).
         /*!
+            鉄の密度（kg/m^3）
+        */
+        static auto constexpr ALUMINIUMRHO = 2698.9;
+
+        //! A private static member variable (constant expression).
+        /*!
             Bulirsch-Stoer法の初期刻み値
         */
         static auto constexpr DX = 0.01;
@@ -216,6 +221,12 @@ namespace solveeom {
 
         //! A private member variable.
         /*!
+        球の半径
+        */
+        double r_;
+
+        //! A private member variable.
+        /*!
             球の質量
         */
         double m_;
@@ -232,11 +243,6 @@ namespace solveeom {
         */
         double nyu_;
         
-        //! A private member variable.
-        /*!
-            球の半径
-        */
-        double r_;
 
         //! A private member variable.
         /*!

@@ -41,13 +41,12 @@ extern "C" {
     /*!
         seオブジェクトを初期化する
         \param l ロープの長さ
-        \param m 球の質量
         \param r 球の半径
         \param resistance 空気抵抗の有無
         \param simpleharmonic 単振動にするかどうか
         \param theta0 θの初期値
     */
-    DLLEXPORT void __stdcall init(float l, float m, float r, bool resistance, bool simpleharmonic, float theta0);
+    DLLEXPORT void __stdcall init(float l, float r, bool resistance, bool simpleharmonic, float theta0);
 
     //! A global function.
     /*!
