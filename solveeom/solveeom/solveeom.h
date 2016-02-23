@@ -173,7 +173,7 @@ namespace solveeom {
         
         //! A private static member variable (constant expression).
         /*!
-            鉄の密度（kg/m^3）
+            アルミニウムの密度（kg/m^3）
         */
         static auto constexpr ALUMINIUMRHO = 2698.9;
 

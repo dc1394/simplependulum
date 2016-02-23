@@ -17,11 +17,6 @@ namespace SimplePendulum
         #region フィールド
 
         /// <summary>
-        /// エネルギーのスケール
-        /// </summary>
-        private static readonly float EnergyScale = 1000.0f;
-
-        /// <summary>
         /// 重力ベクトルの向き
         /// </summary>
         private static readonly Vector3 GravityDirection = Physics.gravity.normalized;
@@ -57,7 +52,7 @@ namespace SimplePendulum
         /// 球の半径
         /// </summary>
         [SerializeField]
-        private float Radius = 0.0025f;
+        private float Radius = 0.05f;
 
         /// <summary>
         /// ボタンのテキスト
@@ -165,7 +160,7 @@ namespace SimplePendulum
             var kinetic = Solveeomcs.SolveEOMcs.Kinetic_Energy();
             GUI.Label(
                 new Rect(20.0f, (float)ypos, 180.0f, 20.0f),
-                String.Format("運動エネルギー = {0:F3}E-3(J)", kinetic * SimplePendulum.EnergyScale));
+                String.Format("運動エネルギー = {0:F3}(J)", kinetic));
 
             ypos += 20;
 
@@ -173,20 +168,20 @@ namespace SimplePendulum
             var potential = Solveeomcs.SolveEOMcs.Potential_Energy();
             GUI.Label(
                 new Rect(20.0f, (float)ypos, 170.0f, 20.0f),
-                String.Format("ポテンシャル = {0:F3}E-3(J)", potential * SimplePendulum.EnergyScale));
+                String.Format("ポテンシャル = {0:F3}(J)", potential));
 
             ypos += 20;
 
             // ラベルに全エネルギーの値を表示する
             GUI.Label(
                 new Rect(20.0f, (float)ypos, 170.0f, 20.0f),
-                String.Format("全エネルギー = {0:F3}E-3(J)", (kinetic + potential) * SimplePendulum.EnergyScale));
+                String.Format("全エネルギー = {0:F3}(J)", kinetic + potential));
 
             var ypos2 = 20;
 
             // 単振動にするかどうかのチェックボックスを表示する
             var sincurvbefore = this.simpleharmonic;
-            this.simpleharmonic = GUI.Toggle(new Rect(200.0f, (float)ypos2, 150.0f, 20.0f), this.simpleharmonic, "単振動");
+            this.simpleharmonic = GUI.Toggle(new Rect(210.0f, (float)ypos2, 150.0f, 20.0f), this.simpleharmonic, "単振動");
             if (sincurvbefore != this.simpleharmonic)
             {
                 Solveeomcs.SolveEOMcs.SetSimpleharmonic(this.simpleharmonic);
@@ -196,7 +191,7 @@ namespace SimplePendulum
 
             // 空気抵抗のチェックボックスを表示する
             var resbefore = this.resistance;
-            this.resistance = GUI.Toggle(new Rect(200.0f, (float)ypos2, 150.0f, 20.0f), this.resistance, "流体の抵抗あり");
+            this.resistance = GUI.Toggle(new Rect(210.0f, (float)ypos2, 150.0f, 20.0f), this.resistance, "流体の抵抗あり");
             if (resbefore != this.resistance)
             {
                 Solveeomcs.SolveEOMcs.SetResistance(this.resistance);
@@ -205,13 +200,13 @@ namespace SimplePendulum
             ypos2 += 25;
 
             // 「角度θ」と表示する
-            GUI.Label(new Rect(200.0f, (float)ypos2, 100.0f, 20.0f), "角度θ");
+            GUI.Label(new Rect(210.0f, (float)ypos2, 100.0f, 20.0f), "角度θ");
 
             ypos2 += 20;
 
             // 角度を変更するスライダーを表示する
             var thetadegbefore = this.thetadeg;
-            this.thetadeg = GUI.HorizontalSlider(new Rect(200.0f, (float)ypos2, 100.0f, 20.0f), this.thetadeg, -180.0f, 180.0f);
+            this.thetadeg = GUI.HorizontalSlider(new Rect(210.0f, (float)ypos2, 100.0f, 20.0f), this.thetadeg, -180.0f, 180.0f);
             if (Mathf.Abs(this.thetadeg - thetadegbefore) > Mathf.Epsilon)
             {
                 var theta = Mathf.Deg2Rad * this.thetadeg;
@@ -223,13 +218,13 @@ namespace SimplePendulum
             ypos2 += 20;
 
             // 「速度v」と表示する
-            GUI.Label(new Rect(200.0f, (float)ypos2, 100.0f, 20.0f), "速度v");
+            GUI.Label(new Rect(210.0f, (float)ypos2, 100.0f, 20.0f), "速度v");
 
             ypos2 += 20;
 
             // 速度を変更するスライダーを表示する
             var velocitybefore = this.velocity;
-            this.velocity = GUI.HorizontalSlider(new Rect(200.0f, (float)ypos2, 100.0f, 20.0f), this.velocity, -10.0f, 10.0f);
+            this.velocity = GUI.HorizontalSlider(new Rect(210.0f, (float)ypos2, 100.0f, 20.0f), this.velocity, -10.0f, 10.0f);
             if (Mathf.Abs(this.velocity - velocitybefore) > Mathf.Epsilon)
             {
                 Solveeomcs.SolveEOMcs.SetV(this.velocity / this.ropeLength);
@@ -237,7 +232,7 @@ namespace SimplePendulum
 
             ypos2 += 20;
 
-            GUILayout.BeginArea(new Rect(200.0f, ypos2, 200.0f, ypos2));
+            GUILayout.BeginArea(new Rect(210.0f, ypos2, 210.0f, ypos2));
             GUILayout.BeginVertical();
 
             var selgridintbefore = this.selGridInt;
