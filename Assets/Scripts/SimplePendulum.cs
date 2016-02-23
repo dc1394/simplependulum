@@ -32,11 +32,21 @@ namespace SimplePendulum
         private static readonly String StopText = "Stop";
 
         /// <summary>
+        /// ボタンのテキスト
+        /// </summary>
+        private String buttontext = SimplePendulum.StartText;
+
+        /// <summary>
         /// ロープの重心のスケール
         /// </summary>
         [SerializeField]
         private float CenterOfGarvityForRopeScale = 0.4f;
-        
+
+        /// <summary>
+        /// 実行中かどうかを示すフラグ
+        /// </summary>
+        private bool exec = false;
+
         /// <summary>
         /// 原点の座標
         /// </summary>
@@ -53,17 +63,7 @@ namespace SimplePendulum
         /// </summary>
         [SerializeField]
         private float Radius = 0.05f;
-
-        /// <summary>
-        /// ボタンのテキスト
-        /// </summary>
-        private String buttontext = SimplePendulum.StartText;
-
-        /// <summary>
-        /// 実行中かどうかを示すフラグ
-        /// </summary>
-        private bool exec = false;
-
+                
         /// <summary>
         /// 空気抵抗のチェックボックス
         /// </summary>
@@ -224,7 +224,7 @@ namespace SimplePendulum
 
             // 速度を変更するスライダーを表示する
             var velocitybefore = this.velocity;
-            this.velocity = GUI.HorizontalSlider(new Rect(210.0f, (float)ypos2, 100.0f, 20.0f), this.velocity, -10.0f, 10.0f);
+            this.velocity = GUI.HorizontalSlider(new Rect(210.0f, (float)ypos2, 100.0f, 20.0f), this.velocity, -20.0f, 20.0f);
             if (Mathf.Abs(this.velocity - velocitybefore) > Mathf.Epsilon)
             {
                 Solveeomcs.SolveEOMcs.SetV(this.velocity / this.ropeLength);
