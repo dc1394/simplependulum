@@ -45,7 +45,12 @@ namespace SimplePendulum
         /// <summary>
         /// 実行中かどうかを示すフラグ
         /// </summary>
-        private bool exec = false;
+        private Boolean exec = false;
+
+        /// <summary>
+        /// θの初期値
+        /// </summary>
+        private float firsttheta;
 
         /// <summary>
         /// 原点の座標
@@ -67,7 +72,7 @@ namespace SimplePendulum
         /// <summary>
         /// 空気抵抗のチェックボックス
         /// </summary>
-        private bool resistance = true;
+        private Boolean resistance = true;
 
         /// <summary>
         /// ロープオブジェクト
@@ -93,7 +98,7 @@ namespace SimplePendulum
         /// <summary>
         /// 単振動にするかどうかのチェックボックス
         /// </summary>
-        private bool simpleharmonic = false;
+        private Boolean simpleharmonic = false;
 
         /// <summary>
         /// 球オブジェクト
@@ -134,64 +139,75 @@ namespace SimplePendulum
         }
 
         /// <summary>
+        /// 座標と球が成す角を計算する
+        /// </summary>
+
+        /// <returns>座標と球が成す角</returns>
+        private float GetThetaDeg()
+        {
+            var theta = this.GetSphereAndGravityAngle();
+
+            return theta * (this.GetSpherePosZ() > 0.0f ? 1.0f : -1.0f);
+        }
+
+        /// <summary>
         /// GUIイベントの処理
         /// </summary>
         private void OnGUI()
         {
-            var ypos = 20;
+            var ypos = 20.0f;
 
             // ラベルに角度θの値を表示する
-            var angle = this.GetSphereAndGravityAngle();
             GUI.Label(
-                new Rect(20.0f, (float)ypos, 160.0f, 20.0f),
-                String.Format("角度θ = {0:F3}°", this.GetSpherePosZ() > 0.0f ? angle : -angle));
+                new Rect(20.0f, ypos, 160.0f, 20.0f),
+                String.Format("角度θ = {0:F3}°", this.GetThetaDeg()));
 
-            ypos += 20;
+            ypos += 20.0f;
 
             // ラベルに速度vの値を表示する
             var vel = this.ropeLength * Solveeomcs.SolveEOMcs.GetV();
             GUI.Label(
-                new Rect(20.0f, (float)ypos, 160.0f, 20.0f),
+                new Rect(20.0f, ypos, 160.0f, 20.0f),
                 String.Format("速度v = {0:F3}(m/s)", vel));
 
-            ypos += 20;
+            ypos += 20.0f;
 
             // ラベルに運動エネルギーの値を表示する
             var kinetic = Solveeomcs.SolveEOMcs.Kinetic_Energy();
             GUI.Label(
-                new Rect(20.0f, (float)ypos, 180.0f, 20.0f),
+                new Rect(20.0f, ypos, 180.0f, 20.0f),
                 String.Format("運動エネルギー = {0:F3}(J)", kinetic));
 
-            ypos += 20;
+            ypos += 20.0f;
 
             // ラベルにポテンシャルエネルギーの値を表示する
             var potential = Solveeomcs.SolveEOMcs.Potential_Energy();
             GUI.Label(
-                new Rect(20.0f, (float)ypos, 170.0f, 20.0f),
+                new Rect(20.0f, ypos, 170.0f, 20.0f),
                 String.Format("ポテンシャル = {0:F3}(J)", potential));
 
-            ypos += 20;
+            ypos += 20.0f;
 
             // ラベルに全エネルギーの値を表示する
             GUI.Label(
-                new Rect(20.0f, (float)ypos, 170.0f, 20.0f),
+                new Rect(20.0f, ypos, 170.0f, 20.0f),
                 String.Format("全エネルギー = {0:F3}(J)", kinetic + potential));
 
-            var ypos2 = 20;
+            var ypos2 = 20.0f;
 
             // 単振動にするかどうかのチェックボックスを表示する
             var sincurvbefore = this.simpleharmonic;
-            this.simpleharmonic = GUI.Toggle(new Rect(210.0f, (float)ypos2, 150.0f, 20.0f), this.simpleharmonic, "単振動");
+            this.simpleharmonic = GUI.Toggle(new Rect(210.0f, ypos2, 150.0f, 20.0f), this.simpleharmonic, "単振動");
             if (sincurvbefore != this.simpleharmonic)
             {
                 Solveeomcs.SolveEOMcs.SetSimpleharmonic(this.simpleharmonic);
             }
 
-            ypos2 += 20;
+            ypos2 += 20.0f;
 
             // 空気抵抗のチェックボックスを表示する
             var resbefore = this.resistance;
-            this.resistance = GUI.Toggle(new Rect(210.0f, (float)ypos2, 150.0f, 20.0f), this.resistance, "流体の抵抗あり");
+            this.resistance = GUI.Toggle(new Rect(210.0f, ypos2, 150.0f, 20.0f), this.resistance, "流体の抵抗あり");
             if (resbefore != this.resistance)
             {
                 Solveeomcs.SolveEOMcs.SetResistance(this.resistance);
@@ -200,13 +216,13 @@ namespace SimplePendulum
             ypos2 += 25;
 
             // 「角度θ」と表示する
-            GUI.Label(new Rect(210.0f, (float)ypos2, 100.0f, 20.0f), "角度θ");
+            GUI.Label(new Rect(210.0f, ypos2, 100.0f, 20.0f), "角度θ");
 
-            ypos2 += 20;
+            ypos2 += 20.0f;
 
             // 角度を変更するスライダーを表示する
             var thetadegbefore = this.thetadeg;
-            this.thetadeg = GUI.HorizontalSlider(new Rect(210.0f, (float)ypos2, 100.0f, 20.0f), this.thetadeg, -180.0f, 180.0f);
+            this.thetadeg = GUI.HorizontalSlider(new Rect(210.0f, ypos2, 100.0f, 20.0f), this.thetadeg, -180.0f, 180.0f);
             if (Mathf.Abs(this.thetadeg - thetadegbefore) > Mathf.Epsilon)
             {
                 var theta = Mathf.Deg2Rad * this.thetadeg;
@@ -215,22 +231,22 @@ namespace SimplePendulum
                 this.RopeUpdate();
             }
 
-            ypos2 += 20;
+            ypos2 += 20.0f;
 
             // 「速度v」と表示する
-            GUI.Label(new Rect(210.0f, (float)ypos2, 100.0f, 20.0f), "速度v");
+            GUI.Label(new Rect(210.0f, ypos2, 100.0f, 20.0f), "速度v");
 
-            ypos2 += 20;
+            ypos2 += 20.0f;
 
             // 速度を変更するスライダーを表示する
             var velocitybefore = this.velocity;
-            this.velocity = GUI.HorizontalSlider(new Rect(210.0f, (float)ypos2, 100.0f, 20.0f), this.velocity, -20.0f, 20.0f);
+            this.velocity = GUI.HorizontalSlider(new Rect(210.0f, ypos2, 100.0f, 20.0f), this.velocity, -20.0f, 20.0f);
             if (Mathf.Abs(this.velocity - velocitybefore) > Mathf.Epsilon)
             {
                 Solveeomcs.SolveEOMcs.SetV(this.velocity / this.ropeLength);
             }
 
-            ypos2 += 20;
+            ypos2 += 20.0f;
 
             GUILayout.BeginArea(new Rect(210.0f, ypos2, 210.0f, ypos2));
             GUILayout.BeginVertical();
@@ -247,7 +263,8 @@ namespace SimplePendulum
 
             var ypos3 = 20.0f;
 
-            if (GUI.Button(new Rect(320.0f, (float)ypos3, 110.0f, 20.0f), this.buttontext))
+            // 「Start」か「Stop」ボタンを表示する
+            if (GUI.Button(new Rect(320.0f, ypos3, 110.0f, 20.0f), this.buttontext))
             {
                 if (this.exec)
                 {
@@ -259,6 +276,18 @@ namespace SimplePendulum
                     this.exec = true;
                     this.buttontext = SimplePendulum.StopText;
                 }
+            }
+
+            ypos3 += 30.0f;
+
+            // 「Reset」ボタンを表示する
+            if (GUI.Button(new Rect(320.0f, ypos3, 110.0f, 20.0f), "Reset"))
+            {
+                Solveeomcs.SolveEOMcs.SetTheta(this.firsttheta);
+                Solveeomcs.SolveEOMcs.SetV(0.0f);
+
+                this.SphereRotate(this.firsttheta);
+                this.RopeUpdate();
             }
         }
 
@@ -342,18 +371,14 @@ namespace SimplePendulum
         {
             this.ropeLength = Vector3.Distance(this.Origin, this.Sphere.transform.position);
 
-            this.thetadeg = this.GetSphereAndGravityAngle();
-            if (this.GetSpherePosZ() < 0.0f)
-            {
-                this.thetadeg *= -1.0f;
-            }
+            this.thetadeg = this.GetThetaDeg();
 
             Solveeomcs.SolveEOMcs.Init(
                 this.ropeLength,
                 this.Radius,
                 this.resistance,
                 this.simpleharmonic,
-                Mathf.Deg2Rad * this.thetadeg);
+                this.firsttheta = Mathf.Deg2Rad * this.thetadeg);
         }
 
         /// <summary>
