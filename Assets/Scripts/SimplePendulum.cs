@@ -289,6 +289,14 @@ namespace SimplePendulum
                 this.SphereRotate(this.firsttheta);
                 this.RopeUpdate();
             }
+
+            ypos3 += 30.0f;
+
+            // 「Exit」ボタンを表示する
+            if (GUI.Button(new Rect(320.0f, ypos3, 110.0f, 20.0f), "Exit"))
+            {
+                Application.Quit();
+            }
         }
 
         /// <summary>
