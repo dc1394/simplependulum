@@ -127,7 +127,7 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <PostBuildEvent>
-      <Command>copy ..\Release\solveeom.dll ..\..\Assets\Plugins</Command>
+      <Command>copy ..\Release\solveeom.dll ..\..\Assets\Plugins\x86</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -151,7 +151,7 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <PostBuildEvent>
-      <Command>copy ..\x64\Release\solveeom.dll ..\..\Assets\Plugins</Command>
+      <Command>copy ..\x64\Release\solveeom.dll ..\..\Assets\Plugins\x86_64</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

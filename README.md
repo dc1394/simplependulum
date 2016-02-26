@@ -59,7 +59,7 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --------------------------------------------------------------------------------
 
-  SchracにはBoostコミュニティによるBoost C++ Librariesを使用しています。
+  simplependulumにはBoostコミュニティによるBoost C++ Librariesを使用しています。
   こちらのライセンスは Boostライセンス になります。
 
 /* Boost Software License - Version 1.0 - August 17th, 2003

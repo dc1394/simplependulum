@@ -20,6 +20,11 @@ ExportedObj/
 *.unityproj
 *.booproj
 *.Cache
+*.log
+*.tlog
+*.obj
+*.iobj
+*.ipdb
 
 # -------------[ OS generated ]------------------------ #
 .DS_Store
