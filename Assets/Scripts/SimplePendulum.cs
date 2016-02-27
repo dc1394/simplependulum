@@ -288,6 +288,8 @@ namespace SimplePendulum
 
                 this.SphereRotate(this.firsttheta);
                 this.RopeUpdate();
+                this.thetadeg = Mathf.Rad2Deg * this.firsttheta;
+                this.velocity = 0.0f;
             }
 
             ypos3 += 30.0f;
