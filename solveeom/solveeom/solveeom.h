@@ -105,7 +105,7 @@ namespace solveeom {
             \return ポテンシャルエネルギー
         */
         float potential_energy() const;
-
+				
         //! A public member function.
         /*!
             流体の種類を切り替える
@@ -125,6 +125,13 @@ namespace solveeom {
         */
         std::function<void(state_type const &, state_type &, double const)> getEOM() const;
 
+		//! A public member function.
+		/*!
+			全エネルギーを求める
+			\return ポテンシャルエネルギー
+		*/
+		double total_energy() const;
+		
         // #endregion privateメンバ関数
 
         // #region プロパティ
@@ -221,7 +228,7 @@ namespace solveeom {
 
         //! A private member variable.
         /*!
-        球の半径
+			球の半径
         */
         double r_;
 

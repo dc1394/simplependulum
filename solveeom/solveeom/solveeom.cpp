@@ -65,9 +65,9 @@ namespace solveeom {
             0.0,
             t,
             dt,
-            [&result](auto const & x, auto const t)
+            [&result, this](auto const & x, auto const t)
             {
-                result << boost::format("%.3f, %15f\n") % t % x[0];
+				result << boost::format("%.3f, %.15f, %.15f\n") % t % x[0] % total_energy();
             });
     }
 
@@ -75,6 +75,7 @@ namespace solveeom {
     {
         return static_cast<float>(m_ * SolveEOM::g * l_ * (1.0f - std::cos(x_[0])));
     }
+
 
     void SolveEOM::setfluid(std::int32_t fluid)
     {
@@ -101,7 +102,7 @@ namespace solveeom {
 
     // #region privateメンバ関数
 
-    std::function<void(SolveEOM::state_type const &, SolveEOM::state_type &, double const)> SolveEOM::getEOM() const
+	std::function<void(SolveEOM::state_type const &, SolveEOM::state_type &, double const)> SolveEOM::getEOM() const
     {
         auto const eom = [this](state_type const & x, state_type & dxdt, double const)
         {
@@ -166,6 +167,14 @@ namespace solveeom {
 
         return eom;
     }
+	
+	double SolveEOM::total_energy() const
+	{
+		auto const kinetic = 0.5 * m_ * sqr(l_ * x_[1]);
+		auto const potential = m_ * SolveEOM::g * l_ * (1.0 - std::cos(x_[0]));
+
+		return kinetic + potential;
+	}
 
     // #endregion privateメンバ関数
 }
