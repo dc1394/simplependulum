@@ -1,7 +1,7 @@
 ﻿/*! \file solveeomexemain.cpp
     \brief メイン関数
 
-    Copyright ©  2016 @dc1394 All Rights Reserved.
+    Copyright © 2016-2018 @dc1394 All Rights Reserved.
     This software is released under the BSD 2-Clause License.
 */
 #include "../solveeom/solveeommain.h"

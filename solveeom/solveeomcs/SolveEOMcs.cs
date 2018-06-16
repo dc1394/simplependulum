@@ -1,19 +1,18 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="SolveEOMcs.cs" company="dc1394's software">
-//     Copyright ©  2016 @dc1394 All Rights Reserved.
+//     Copyright © 2016-2018 @dc1394 All Rights Reserved.
 //     This software is released under the BSD 2-Clause License.
 // </copyright>
 //-----------------------------------------------------------------------
-
 namespace Solveeomcs
 {
     using System;
     using System.Runtime.InteropServices;
 
     /// <summary>
-    /// C++で書かれたSolveEOMクラスをC#からアクセスするためのラッパークラス
+    /// C++で書かれたSolveEoMクラスをC#からアクセスするためのラッパークラス
     /// </summary>
-    public sealed class SolveEOMcs
+    public sealed class SolveEoMcs
     {
         #region メソッド
 

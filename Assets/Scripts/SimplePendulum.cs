@@ -40,7 +40,7 @@ namespace SimplePendulum
         /// ロープの重心のスケール
         /// </summary>
         [SerializeField]
-        private float CenterOfGarvityForRopeScale = 0.4f;
+        private float centerOfGarvityForRopeScale = 0.4f;
 
         /// <summary>
         /// 実行中かどうかを示すフラグ
@@ -56,7 +56,7 @@ namespace SimplePendulum
         /// 原点の座標
         /// </summary>
         [SerializeField]
-        private Vector3 Origin = Vector3.zero;
+        private Vector3 origin = Vector3.zero;
 
         /// <summary>
         /// 前回のフレームで取得した時間
@@ -67,7 +67,7 @@ namespace SimplePendulum
         /// 球の半径
         /// </summary>
         [SerializeField]
-        private float Radius = 0.05f;
+        private float radius = 0.05f;
                 
         /// <summary>
         /// 空気抵抗のチェックボックス
@@ -78,7 +78,7 @@ namespace SimplePendulum
         /// ロープオブジェクト
         /// </summary>
         [SerializeField]
-        private GameObject Rope = null;
+        private GameObject rope = null;
 
         /// <summary>
         /// ロープの長さ
@@ -104,7 +104,7 @@ namespace SimplePendulum
         /// 球オブジェクト
         /// </summary>
         [SerializeField]
-        private GameObject Sphere = null;
+        private GameObject sphere = null;
 
         /// <summary>
         /// 角度
@@ -126,7 +126,7 @@ namespace SimplePendulum
         /// <returns>球の座標と重力ベクトルの成す角度</returns>
         private float GetSphereAndGravityAngle()
         {
-            return Vector3.Angle(this.Sphere.transform.position - this.Origin, SimplePendulum.GravityDirection);
+            return Vector3.Angle(this.sphere.transform.position - this.origin, SimplePendulum.GravityDirection);
         }
 
         /// <summary>
@@ -135,7 +135,7 @@ namespace SimplePendulum
         /// <returns>球の座標のz座標</returns>
         private float GetSpherePosZ()
         {
-            return (this.Sphere.transform.position - this.Origin).z;
+            return (this.sphere.transform.position - this.origin).z;
         }
 
         /// <summary>
@@ -165,7 +165,7 @@ namespace SimplePendulum
             ypos += 20.0f;
 
             // ラベルに速度vの値を表示する
-            var vel = this.ropeLength * Solveeomcs.SolveEOMcs.GetV();
+            var vel = Solveeomcs.SolveEoMcs.GetV();
             GUI.Label(
                 new Rect(20.0f, ypos, 160.0f, 20.0f),
                 String.Format("速度v = {0:F3}(m/s)", vel));
@@ -173,7 +173,7 @@ namespace SimplePendulum
             ypos += 20.0f;
 
             // ラベルに運動エネルギーの値を表示する
-            var kinetic = Solveeomcs.SolveEOMcs.Kinetic_Energy();
+            var kinetic = Solveeomcs.SolveEoMcs.Kinetic_Energy();
             GUI.Label(
                 new Rect(20.0f, ypos, 180.0f, 20.0f),
                 String.Format("運動エネルギー = {0:F3}(J)", kinetic));
@@ -181,7 +181,7 @@ namespace SimplePendulum
             ypos += 20.0f;
 
             // ラベルにポテンシャルエネルギーの値を表示する
-            var potential = Solveeomcs.SolveEOMcs.Potential_Energy();
+            var potential = Solveeomcs.SolveEoMcs.Potential_Energy();
             GUI.Label(
                 new Rect(20.0f, ypos, 170.0f, 20.0f),
                 String.Format("ポテンシャル = {0:F3}(J)", potential));
@@ -200,7 +200,7 @@ namespace SimplePendulum
             this.simpleharmonic = GUI.Toggle(new Rect(210.0f, ypos2, 150.0f, 20.0f), this.simpleharmonic, "単振動");
             if (sincurvbefore != this.simpleharmonic)
             {
-                Solveeomcs.SolveEOMcs.SetSimpleharmonic(this.simpleharmonic);
+                Solveeomcs.SolveEoMcs.SetSimpleharmonic(this.simpleharmonic);
             }
 
             ypos2 += 20.0f;
@@ -210,7 +210,7 @@ namespace SimplePendulum
             this.resistance = GUI.Toggle(new Rect(210.0f, ypos2, 150.0f, 20.0f), this.resistance, "流体の抵抗あり");
             if (resbefore != this.resistance)
             {
-                Solveeomcs.SolveEOMcs.SetResistance(this.resistance);
+                Solveeomcs.SolveEoMcs.SetResistance(this.resistance);
             }
 
             ypos2 += 25;
@@ -226,7 +226,7 @@ namespace SimplePendulum
             if (Mathf.Abs(this.thetadeg - thetadegbefore) > Mathf.Epsilon)
             {
                 var theta = Mathf.Deg2Rad * this.thetadeg;
-                Solveeomcs.SolveEOMcs.SetTheta(theta);
+                Solveeomcs.SolveEoMcs.SetTheta(theta);
                 this.SphereRotate(theta);
                 this.RopeUpdate();
             }
@@ -243,7 +243,7 @@ namespace SimplePendulum
             this.velocity = GUI.HorizontalSlider(new Rect(210.0f, ypos2, 100.0f, 20.0f), this.velocity, -20.0f, 20.0f);
             if (Mathf.Abs(this.velocity - velocitybefore) > Mathf.Epsilon)
             {
-                Solveeomcs.SolveEOMcs.SetV(this.velocity / this.ropeLength);
+                Solveeomcs.SolveEoMcs.SetV(this.velocity);
             }
 
             ypos2 += 20.0f;
@@ -255,7 +255,7 @@ namespace SimplePendulum
             this.selGridInt = GUILayout.SelectionGrid(this.selGridInt, this.selCaptions, 1, "Toggle");
             if (selgridintbefore != this.selGridInt)
             {
-                Solveeomcs.SolveEOMcs.SetFluid(this.selGridInt);
+                Solveeomcs.SolveEoMcs.SetFluid(this.selGridInt);
             }
 
             GUILayout.EndVertical();
@@ -283,8 +283,8 @@ namespace SimplePendulum
             // 「Reset」ボタンを表示する
             if (GUI.Button(new Rect(320.0f, ypos3, 110.0f, 20.0f), "Reset"))
             {
-                Solveeomcs.SolveEOMcs.SetTheta(this.firsttheta);
-                Solveeomcs.SolveEOMcs.SetV(0.0f);
+                Solveeomcs.SolveEoMcs.SetTheta(this.firsttheta);
+                Solveeomcs.SolveEoMcs.SetV(0.0f);
 
                 this.SphereRotate(this.firsttheta);
                 this.RopeUpdate();
@@ -307,22 +307,22 @@ namespace SimplePendulum
         private void RopeUpdate()
         {
             // ロープの座標を更新
-            this.Rope.transform.position = new Vector3(
+            this.rope.transform.position = new Vector3(
                 0.0f,
-                this.CenterOfGarvityForRopeScale * this.Sphere.transform.position.y,
-                this.CenterOfGarvityForRopeScale * this.Sphere.transform.position.z);
+                this.centerOfGarvityForRopeScale * this.sphere.transform.position.y,
+                this.centerOfGarvityForRopeScale * this.sphere.transform.position.z);
 
             // ロープの角度を初期化
-            this.Rope.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
+            this.rope.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
 
             // 角度が正かどうか
             if (this.GetSpherePosZ() > 0.0f)
             {
-                this.Rope.transform.Rotate(new Vector3(-this.GetSphereAndGravityAngle(), 0.0f, 0.0f));
+                this.rope.transform.Rotate(new Vector3(-this.GetSphereAndGravityAngle(), 0.0f, 0.0f));
             }
             else
             {
-                this.Rope.transform.Rotate(new Vector3(this.GetSphereAndGravityAngle(), 0.0f, 0.0f));
+                this.rope.transform.Rotate(new Vector3(this.GetSphereAndGravityAngle(), 0.0f, 0.0f));
             }
         }
 
@@ -347,7 +347,7 @@ namespace SimplePendulum
             var rsintheta = this.ropeLength * Mathf.Sin(theta);
 
             // 球の角度を更新
-            this.Sphere.transform.position = new Vector3(
+            this.sphere.transform.position = new Vector3(
                 0.0f,
                 (rsintheta * SimplePendulum.GravityDirection.z) + (rcostheta * SimplePendulum.GravityDirection.y),
                 (rcostheta * SimplePendulum.GravityDirection.z) - (rsintheta * SimplePendulum.GravityDirection.y));
@@ -379,13 +379,13 @@ namespace SimplePendulum
         /// </summary>
         private void PendulumInit()
         {
-            this.ropeLength = Vector3.Distance(this.Origin, this.Sphere.transform.position);
+            this.ropeLength = Vector3.Distance(this.origin, this.sphere.transform.position);
 
             this.thetadeg = this.GetThetaDeg();
 
-            Solveeomcs.SolveEOMcs.Init(
+            Solveeomcs.SolveEoMcs.Init(
                 this.ropeLength,
-                this.Radius,
+                this.radius,
                 this.resistance,
                 this.simpleharmonic,
                 this.firsttheta = Mathf.Deg2Rad * this.thetadeg);
@@ -398,7 +398,7 @@ namespace SimplePendulum
         private void SphereUpdate(float frameTime)
         {
             // 運動方程式を解いてθを求める
-            var theta = Solveeomcs.SolveEOMcs.NextStep(frameTime);
+            var theta = Solveeomcs.SolveEoMcs.NextStep(frameTime);
 
             // 球の角度を更新
             this.SphereRotate(theta);

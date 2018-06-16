@@ -74,12 +74,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="SolveEOMcs.cs" />
+    <Compile Include="SolveEoMcs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy solveeomcs.dll ..\..\..\..\..\Assets\Plugins\x86
+    <PostBuildEvent>copy solveeomcs.dll ..\..\..\..\..\Assets\Plugins\x86_64
 </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

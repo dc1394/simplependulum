@@ -1,11 +1,10 @@
 ﻿/*! \file solveeommain.cpp
     \brief 単振り子に対して運動方程式を解く関数群の実装
 
-    Copyright ©  2016 @dc1394 All Rights Reserved.
+    Copyright © 2016-2018 @dc1394 All Rights Reserved.
     This software is released under the BSD 2-Clause License.
 */
 #include "solveeommain.h"
-#include <boost/utility/in_place_factory.hpp>   // boost::in_place
 
 extern "C" {
     float __stdcall gettheta()
@@ -20,7 +19,7 @@ extern "C" {
 
     void __stdcall init(float l, float r, bool resistance, bool simpleharmonic, float theta0)
     {
-        pse = boost::in_place(l, r, resistance, simpleharmonic, theta0);
+        pse.emplace(l, r, resistance, simpleharmonic, theta0);
     }
     
     float __stdcall kinetic_energy()

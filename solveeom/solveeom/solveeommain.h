@@ -1,7 +1,7 @@
 ﻿/*! \file solveeommain.h
     \brief 単振り子に対して運動方程式を解く関数群の宣言
 
-    Copyright ©  2016 @dc1394 All Rights Reserved.
+    Copyright © 2016-2018 @dc1394 All Rights Reserved.
     This software is released under the BSD 2-Clause License.
 */
 #ifndef _SOLVEEOMMAIN_H_
@@ -14,14 +14,14 @@
 #endif
 
 #include "solveeom.h"
-#include <boost/optional.hpp>   // for boost::optional
+#include <optional>		// for std::optional
 
 extern "C" {
     //! A global variable.
     /*!
-        SolveEOMクラスのオブジェクトへのポインタ
+        SolveEoMクラスのオブジェクトへのポインタ
     */
-    static boost::optional<solveeom::SolveEOM> pse;
+    static std::optional<solveeom::SolveEoM> pse;
     
     //! A global function.
     /*!

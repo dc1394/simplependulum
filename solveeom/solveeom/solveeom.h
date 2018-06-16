@@ -1,7 +1,7 @@
 ﻿/*! \file solveeom.h
     \brief 単振り子に対して運動方程式を解くクラスの宣言
 
-    Copyright ©  2016 @dc1394 All Rights Reserved.
+    Copyright © 2016-2018 @dc1394 All Rights Reserved.
     This software is released under the BSD 2-Clause License.
 */
 #ifndef _SOLVEEOM_H_
@@ -30,7 +30,7 @@ namespace solveeom {
     /*!
         単振り子に対して運動方程式を解くクラス
     */
-    class SolveEOM final {
+    class SolveEoM final {
         // #region 列挙型
 
         //!  A enumerated type
@@ -63,13 +63,13 @@ namespace solveeom {
             \param simpleharmonic 単振動にするかどうか
             \param theta0 θの初期値
         */
-        SolveEOM(float l, float r, bool resistance, bool simpleharmonic, float theta0);
+        SolveEoM(float l, float r, bool resistance, bool simpleharmonic, float theta0);
 
         //! A destructor.
         /*!
             デフォルトデストラクタ
         */
-        ~SolveEOM() = default;
+        ~SolveEoM() = default;
 
         // #endregion コンストラクタ・デストラクタ
 
@@ -246,13 +246,6 @@ namespace solveeom {
         
         //! A private member variable.
         /*!
-            動粘度
-        */
-        double nyu_;
-        
-
-        //! A private member variable.
-        /*!
             流体の抵抗
         */
         bool resistance_;
@@ -262,13 +255,19 @@ namespace solveeom {
             流体の密度
         */
         double rho_;
+
+		//! A private member variable.
+		/*!
+			流体の動粘度
+		*/
+		double nyu_;
 		
 		//! A private member variable.
 		/*!
 			単振動にするかどうか
 		*/
-		bool simpleharmonic_ = false;
-
+		bool simpleharmonic_;
+				
         //! A private member variable.
         /*!
             Bulirsch-Stoer法のBoost.ODEIntオブジェクト
@@ -289,13 +288,13 @@ namespace solveeom {
         /*!
             デフォルトコンストラクタ（禁止）
         */
-        SolveEOM() = delete;
+        SolveEoM() = delete;
 
         //! A private copy constructor (deleted).
         /*!
             コピーコンストラクタ（禁止）
         */
-        SolveEOM(SolveEOM const &) = delete;
+        SolveEoM(SolveEoM const &) = delete;
 
         //! A private member function (deleted).
         /*!
@@ -303,7 +302,7 @@ namespace solveeom {
             \param コピー元のオブジェクト（未使用）
             \return コピー元のオブジェクト
         */
-        SolveEOM & operator=(SolveEOM const &) = delete;
+        SolveEoM & operator=(SolveEoM const &) = delete;
 
         // #endregion 禁止されたコンストラクタ・メンバ関数
     };

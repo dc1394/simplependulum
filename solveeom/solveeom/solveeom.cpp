@@ -1,7 +1,7 @@
 ﻿/*! \file solveeom.cpp
     \brief 単振り子に対して運動方程式を解くクラスの実装
 
-    Copyright ©  2016 @dc1394 All Rights Reserved.
+    Copyright © 2016-2018 @dc1394 All Rights Reserved.
     This software is released under the BSD 2-Clause License.
 */
 #include "solveeom.h"
@@ -14,34 +14,34 @@
 namespace solveeom {
     // #region コンストラクタ・デストラクタ
 
-    SolveEOM::SolveEOM(float l, float r, bool resistance, bool simpleharmonic, float theta0) :
+    SolveEoM::SolveEoM(float l, float r, bool resistance, bool simpleharmonic, float theta0) :
         Resistance(nullptr, [this](auto resistance) { return resistance_ = resistance; }),
 		Simpleharmonic(nullptr, [this](auto simpleharmonic) { return simpleharmonic_ = simpleharmonic; }),
         Theta([this] { return static_cast<float>(x_[0]); }, [this](auto theta) { return x_[0] = theta; }),
-        V([this] { return static_cast<float>(x_[1]); }, [this](auto v) { return x_[1] = v; }),
+        V([this] { return static_cast<float>(l_ * x_[1]); }, [this](auto v) { return x_[1] = v / l_; }),
         l_(l),
         r_(r),
-        m_(4.0 / 3.0 * boost::math::constants::pi<double>() * r * r * r * SolveEOM::ALUMINIUMRHO),
-        myu_(SolveEOM::AIRMYU),     // 空気の粘度
+        m_(4.0 / 3.0 * boost::math::constants::pi<double>() * r * r * r * SolveEoM::ALUMINIUMRHO),
+        myu_(SolveEoM::AIRMYU),     // 空気の粘度
         resistance_(resistance),    // 空気抵抗
-        simpleharmonic_(simpleharmonic),
-        rho_(SolveEOM::AIRRHO),     // 空気の密度
-        stepper_(SolveEOM::EPS, SolveEOM::EPS)
+        rho_(SolveEoM::AIRRHO),     // 空気の密度
+		nyu_(myu_ / rho_),
+		simpleharmonic_(simpleharmonic),
+        stepper_(SolveEoM::EPS, SolveEoM::EPS),
+		x_({ theta0, 0.0 })
     {
-        nyu_ = myu_ / rho_;
-        x_ = { theta0, 0.0 };
     }
 
     // #endregion コンストラクタ・デストラクタ
 
     // #region publicメンバ関数
 
-    float SolveEOM::kinetic_energy() const
+    float SolveEoM::kinetic_energy() const
     {
-        return static_cast<float>(0.5 * m_ * sqr(l_ * x_[1]));
+        return static_cast<float>(0.5 * m_ * sqr(V()));
     }
 
-    float SolveEOM::operator()(float dt)
+    float SolveEoM::operator()(float dt)
     {
         boost::numeric::odeint::integrate_adaptive(
             stepper_,
@@ -49,12 +49,12 @@ namespace solveeom {
             x_,
             0.0,
             static_cast<double>(dt),
-            SolveEOM::DX);
+            SolveEoM::DX);
 
         return static_cast<float>(x_[0]);
     }
 
-    void SolveEOM::operator()(double dt, std::string const & filename, double t)
+    void SolveEoM::operator()(double dt, std::string const & filename, double t)
     {
         std::ofstream result(filename);
 
@@ -71,23 +71,22 @@ namespace solveeom {
             });
     }
 
-    float SolveEOM::potential_energy() const
+    float SolveEoM::potential_energy() const
     {
-        return static_cast<float>(m_ * SolveEOM::g * l_ * (1.0f - std::cos(x_[0])));
+        return static_cast<float>(m_ * SolveEoM::g * l_ * (1.0f - std::cos(x_[0])));
     }
-
-
-    void SolveEOM::setfluid(std::int32_t fluid)
+	
+    void SolveEoM::setfluid(std::int32_t fluid)
     {
-        switch (static_cast<SolveEOM::Fluid_type>(fluid)) {
-        case SolveEOM::Fluid_type::AIR:
-            myu_ = SolveEOM::AIRMYU;
-            rho_ = SolveEOM::AIRRHO;
+        switch (static_cast<SolveEoM::Fluid_type>(fluid)) {
+        case SolveEoM::Fluid_type::AIR:
+            myu_ = SolveEoM::AIRMYU;
+            rho_ = SolveEoM::AIRRHO;
             break;
 
-        case SolveEOM::Fluid_type::WATER:
-            myu_ = SolveEOM::WATERMYU;
-            rho_ = SolveEOM::WATERRHO;
+        case SolveEoM::Fluid_type::WATER:
+            myu_ = SolveEoM::WATERMYU;
+            rho_ = SolveEoM::WATERRHO;
             break;
 
         default:
@@ -102,7 +101,7 @@ namespace solveeom {
 
     // #region privateメンバ関数
 
-	std::function<void(SolveEOM::state_type const &, SolveEOM::state_type &, double const)> SolveEOM::getEOM() const
+	std::function<void(SolveEoM::state_type const &, SolveEoM::state_type &, double const)> SolveEoM::getEOM() const
     {
         auto const eom = [this](state_type const & x, state_type & dxdt, double const)
         {
@@ -112,10 +111,10 @@ namespace solveeom {
             // 振り子に働く力
             double f1;
             if (simpleharmonic_) {
-                f1 = -SolveEOM::g * x[0] / l_;
+                f1 = -SolveEoM::g * x[0] / l_;
             }
             else {
-                f1 = -SolveEOM::g * std::sin(x[0]) / l_;
+                f1 = -SolveEoM::g * std::sin(x[0]) / l_;
             }
 
             // 空気抵抗を有効にしていなかったら
@@ -131,7 +130,7 @@ namespace solveeom {
             auto const F = 6.0 * boost::math::constants::pi<double>() * myu_ * r_ * l_ * x[1];
 
             // 粘性抵抗のみ
-            if (Re < SolveEOM::THRESHOLD) {
+            if (Re < SolveEoM::THRESHOLD) {
                 dxdt[1] = f1 - F / (m_ * l_);
 
                 return;
@@ -168,10 +167,10 @@ namespace solveeom {
         return eom;
     }
 	
-	double SolveEOM::total_energy() const
+	double SolveEoM::total_energy() const
 	{
-		auto const kinetic = 0.5 * m_ * sqr(l_ * x_[1]);
-		auto const potential = m_ * SolveEOM::g * l_ * (1.0 - std::cos(x_[0]));
+		auto const kinetic = 0.5 * m_ * sqr(V());
+		auto const potential = m_ * SolveEoM::g * l_ * (1.0 - std::cos(x_[0]));
 
 		return kinetic + potential;
 	}
